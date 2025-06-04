@@ -29,30 +29,40 @@ namespace NU_Clinic.form
 
         MySqlConnection con;
 
-        private new void Load()
+        private void Load()
         {
-            //txtSearch.Text = "";
-            //result.Visible = false;
-            string query = "select u1 .id as 'id'" +
-                ",u1.firstname as'Fristname'" +
-                ",u1.lastname as 'Lastname'" +
-                ",u1.middlename as 'Middlename'" +
-                ",u1.username as 'UserName'" +
-                ",u1.password as 'Password'" +
-                ",r1.role_name as 'RoleName' " +
-                "from user u1 inner join role_detail r1 on u1.role_id = r1.id";
+            string connectionString = "server=127.0.0.1;user=root;password=123456789;database=screen_production;AllowPublicKeyRetrieval=True;SslMode=none;";
 
-            using (MySqlDataAdapter adpt = new MySqlDataAdapter(query, con))
+            string query = @"
+        SELECT 
+            u1.id AS 'ID',
+            u1.firstname AS 'Firstname',
+            u1.lastname AS 'Lastname',
+            u1.middlename AS 'Middlename',
+            u1.username AS 'Username',
+            u1.password AS 'Password',
+            r1.role_name AS 'RoleName'
+        FROM user u1
+        INNER JOIN role_detail r1 ON u1.role_id = r1.id";
+
+            try
             {
-
-                DataSet dset = new DataSet();
-
-                adpt.Fill(dset);
-
-                dataGridView1.DataSource = dset.Tables[0];
+                using (MySqlConnection con = new MySqlConnection(connectionString))
+                {
+                    using (MySqlDataAdapter adpt = new MySqlDataAdapter(query, con))
+                    {
+                        DataSet dset = new DataSet();
+                        adpt.Fill(dset);
+                        dataGridView1.DataSource = dset.Tables[0];
+                    }
+                }
             }
-            con.Close();
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error loading data: " + ex.Message);
+            }
         }
+
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {

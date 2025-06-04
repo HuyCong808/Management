@@ -25,7 +25,8 @@ namespace NU_Clinic
 
             dbConnect = new DbConnection();
             con = dbConnect.GetConnection();
-
+            txtUser.Text = "admin1";
+            txtPass.Text = "1234";
         }
 
         MySqlConnection con;
@@ -43,53 +44,54 @@ namespace NU_Clinic
         {
             try
             {
-                username = txtUser.Text;
-                password = txtPass.Text;
+                string username = txtUser.Text.Trim();
+                string password = txtPass.Text.Trim();
 
-                count = count + 1;
-
-                if (username == "" && password == "")
+                if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
                 {
                     lblWarning.Text = "Username and Password can't be blank";
+                    return;
                 }
-                else
+
+                string connectionString = "server=127.0.0.1;user=root;password=123456789;database=screen_production;AllowPublicKeyRetrieval=True;SslMode=none;";
+
+                using (MySqlConnection con = new MySqlConnection(connectionString))
                 {
-                    string query = "select * from user where username = '" + username + "'&& password = '" + password + "' ";
-                    MySqlDataAdapter data = new MySqlDataAdapter(query, con);
-                    DataTable dt = new DataTable();
-                    data.Fill(dt);
+                    con.Open(); // Mở kết nối
 
-                    if (dt.Rows.Count == 1)
+                    string query = "SELECT * FROM user WHERE username = @username AND password = @password";
+
+                    using (MySqlCommand cmd = new MySqlCommand(query, con))
                     {
-                        //MessageBox.Show("Access Granted. Welcome " + dt.Rows[0]["firstname"].ToString() + " " + dt.Rows[0]["middlename"].ToString() + " " + dt.Rows[0]["lastname"].ToString() + "!");
+                        cmd.Parameters.AddWithValue("@username", username);
+                        cmd.Parameters.AddWithValue("@password", password);
 
-                        DashBoard dashBorad = new DashBoard();
-                        var a = dt.Rows[0];
-                        dashBorad.Firstname = dt.Rows[0]["firstname"].ToString();
-                        dashBorad.Middlename = dt.Rows[0]["middlename"].ToString();
-                        dashBorad.Lastname = dt.Rows[0]["lastname"].ToString();
-                        dashBorad.Username = dt.Rows[0]["username"].ToString();
-                        dashBorad.Show();
-                        dashBorad.Show_information();
-                        //frmMain ma = new frmMain();
+                        using (MySqlDataAdapter data = new MySqlDataAdapter(cmd))
+                        {
+                            DataTable dt = new DataTable();
+                            data.Fill(dt);
 
+                            if (dt.Rows.Count == 1)
+                            {
+                                DashBoard dashBorad = new DashBoard();
+                                dashBorad.Firstname = dt.Rows[0]["firstname"].ToString();
+                                dashBorad.Middlename = dt.Rows[0]["middlename"].ToString();
+                                dashBorad.Lastname = dt.Rows[0]["lastname"].ToString();
+                                dashBorad.Username = dt.Rows[0]["username"].ToString();
+                                dashBorad.Show();
+                                dashBorad.Show_information();
 
-                        this.Hide();
-                        //ma.Firstname = dt.Rows[0]["firstname"].ToString();
-                        //ma.Middlename = dt.Rows[0]["middlename"].ToString();
-                        //ma.Lastname = dt.Rows[0]["lastname"].ToString();
-                        //ma.Username = dt.Rows[0]["username"].ToString();
-                        //ma.Show();
+                                this.Hide();
+                            }
+                            else
+                            {
+                                lblWarning.Text = "Please try again";
+                                txtUser.Clear();
+                                txtPass.Clear();
+                                txtUser.Focus();
+                            }
+                        }
                     }
-                    else
-                    {
-                        lblWarning.Text = "Please try again";
-                        txtUser.Clear();
-                        txtPass.Clear();
-                        txtUser.Focus();
-                    }
-
-
                 }
             }
             catch (Exception ex)
@@ -97,6 +99,8 @@ namespace NU_Clinic
                 MessageBox.Show("Warning: " + ex.Message);
             }
         }
+
+
 
         private void bunifuFlatButton1_Click(object sender, EventArgs e)
         {

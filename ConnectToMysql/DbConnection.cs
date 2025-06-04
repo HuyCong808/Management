@@ -27,7 +27,8 @@ namespace NU_Clinic.ConnectToMysql
             connc.Port = 3306;
             connc.UserID = "root";
             connc.Password = "CongSon98@";
-            connc.Database = "screen_factory";
+            connc.Database = "screen_production";
+
             //connc.Database = "nuclinic";
             connc.SslMode = MySql.Data.MySqlClient.MySqlSslMode.None;
         }

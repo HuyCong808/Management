@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿//using Managerment.form;
+using MySql.Data.MySqlClient;
 using NU_Clinic.ConnectToMysql;
 using System;
 using System.Collections.Generic;
@@ -61,8 +62,19 @@ namespace NU_Clinic.form
             _panel_Content.Controls.Add(_panel_userControl);
         }
 
+        private void Setbackground()
+        {
+            bunifuFlatButton2.BackColor = Color.FromArgb(26, 42, 64); // Với Form
+            bunifuFlatButton1.BackColor = Color.FromArgb(26, 42, 64); // Với Form
+            bunifuFlatButton3.BackColor = Color.FromArgb(26, 42, 64); // Với Form
+        }
         private void bunifuFlatButton3_Click(object sender, EventArgs e)
         {
+            Setbackground();
+
+            bunifuFlatButton3.BackColor = Color.FromArgb(19, 30, 46); // Với Form 
+
+
             _panel_Content.Controls.Clear();
 
             _panel_userControl = new UserDetail();
@@ -75,6 +87,22 @@ namespace NU_Clinic.form
             _panel_Content.Controls.Clear();
 
             _panel_userControl = new Analysis();
+            _panel_userControl.Dock = DockStyle.Fill;
+            _panel_Content.Controls.Add(_panel_userControl);
+        }
+
+        private void bunifuFlatButton2_Click(object sender, EventArgs e)
+        {
+            Setbackground();
+            bunifuFlatButton2.BackColor = Color.FromArgb(19, 30, 46); // Với Form 
+        }
+
+        private void bunifuFlatButton4_Click(object sender, EventArgs e)
+        {
+            Setbackground();
+
+            _panel_Content.Controls.Clear();
+            //_panel_userControl = new Mapping();
             _panel_userControl.Dock = DockStyle.Fill;
             _panel_Content.Controls.Add(_panel_userControl);
         }

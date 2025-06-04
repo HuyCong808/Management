@@ -71,16 +71,17 @@ namespace NU_Clinic.form
                 {
                     int _role = cbbRoleName.SelectedIndex;
 
-                    using (var connection = dbConnect.GetConnection())
+                    string connectionString = "server=127.0.0.1;user=root;password=123456789;database=screen_production;AllowPublicKeyRetrieval=True;SslMode=none;";
+
+                    using (var connection = new MySqlConnection(connectionString))
                     {
                         connection.Open();
                         using (var command = new MySqlCommand())
                         {
-
                             command.Connection = connection;
 
                             command.CommandText = @"INSERT INTO user (firstname, lastname,middlename,username,password,role_id) 
-                            VALUES (@firstname, @lastname,@middlename,@username,@password,@role_id)";
+                                            VALUES (@firstname, @lastname,@middlename,@username,@password,@role_id)";
 
                             command.Parameters.Add("@firstname", MySqlDbType.VarChar).Value = txtFristName.Text;
                             command.Parameters.Add("@lastname", MySqlDbType.VarChar).Value = txtLastName.Text;
@@ -88,19 +89,22 @@ namespace NU_Clinic.form
                             command.Parameters.Add("@username", MySqlDbType.VarChar).Value = txtUserName.Text;
                             command.Parameters.Add("@password", MySqlDbType.VarChar).Value = txtPassword.Text;
                             command.Parameters.Add("@role_id", MySqlDbType.Int16).Value = _role;
+
                             var a = command.ExecuteReader();
                             MessageBox.Show("Insert done!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                     }
-
                 }
                 else
                 {
                     MessageBox.Show("Please check validate textbox!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-
             }
-            catch { }
+            catch
+            {
+                MessageBox.Show("Error occurred while inserting user!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
+
     }
 }
